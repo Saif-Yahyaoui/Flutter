@@ -87,12 +87,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           SizedBox(width: 10.0),
                           Image.asset(
                             'images/logoflutter.png',
-                            height: 160,
-                            width: 160,
+                            height: 120,
+                            width: 120,
                           ),
                         ],
                       ),
-                      // Ajouter d'autres éléments ici si nécessaire
+                      
                     ],
                   ),
                   SizedBox(height: 20.0),
