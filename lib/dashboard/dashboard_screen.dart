@@ -71,26 +71,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Image.asset(
-                    'images/logoflutter.png',
-                    height: 60,
-                    width: 60,
-                  ),
-                  SizedBox(height: 20.0),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IconButton(
-                        onPressed: () {
-                          setState(() {
-                            isExpanded = !isExpanded;
-                          });
-                        },
-                        icon: Icon(Icons.menu),
+                      Row(
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                isExpanded = !isExpanded;
+                              });
+                            },
+                            icon: Icon(Icons.menu),
+                          ),
+                          SizedBox(width: 10.0),
+                          Image.asset(
+                            'images/logoflutter.png',
+                            height: 60,
+                            width: 60,
+                          ),
+                        ],
                       ),
                       // Ajouter d'autres éléments ici si nécessaire
                     ],
                   ),
+                  SizedBox(height: 20.0),
                   // Affichage de l'écran actif
                   Expanded(
                     child: IndexedStack(
