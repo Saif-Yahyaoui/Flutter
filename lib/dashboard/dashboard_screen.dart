@@ -14,7 +14,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     MenuItem(title: 'Dashboard', icon: Icons.dashboard),
     MenuItem(title: 'Users', icon: Icons.person),
     MenuItem(title: 'Orders', icon: Icons.shopping_cart),
-    MenuItem(title: 'Products', icon: Icons.category),
+    MenuItem(title: 'Food Offers', icon: Icons.category),
     MenuItem(title: 'Log Out', icon: Icons.logout),
   ];
 
