@@ -1,7 +1,8 @@
-import 'package:admin/Screens/Login/login_screen.dart';
-import 'package:admin/screens/donations/donations_screen.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../donations/donations_screen.dart';
 
 class SideMenu extends StatelessWidget {
   const SideMenu({
@@ -32,10 +33,11 @@ class SideMenu extends StatelessWidget {
             press: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => DonationsScreen()),
+                MaterialPageRoute(builder: (context) => DonationScreen()),
               );
             },
           ),
+
           DrawerListTile(
             title: "Auto Collect",
             svgSrc: "assets/icons/autocollect.svg",
