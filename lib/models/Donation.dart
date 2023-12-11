@@ -1,17 +1,19 @@
 class Donation {
-  String title;
-  String description;
-  DateTime date;
-  int quantity;
-  String status;
-  String image;
+  //String title;
+  //String description;
+  int quantite;
+
+  String date;
+  String etat;
+  //String image;
 
   Donation({
-    required this.title,
-    required this.description,
+   // required this.title,
+   // required this.description,
+    required this.quantite,
+
     required this.date,
-    required this.quantity,
-    required this.status,
-    required this.image,
+    required this.etat,
+    //required this.image,
   });
 }
