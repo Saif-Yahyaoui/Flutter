@@ -1,3 +1,5 @@
+import 'package:admin/Screens/Login/login_screen.dart';
+import 'package:admin/screens/donations/donations_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -27,7 +29,12 @@ class SideMenu extends StatelessWidget {
           DrawerListTile(
             title: "Donations",
             svgSrc: "assets/icons/donation.svg",
-            press: () {},
+            press: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => DonationsScreen()),
+              );
+            },
           ),
           DrawerListTile(
             title: "Auto Collect",
