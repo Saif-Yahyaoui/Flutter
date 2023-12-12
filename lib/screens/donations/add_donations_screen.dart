@@ -49,7 +49,7 @@ class _POSTState extends State<POST> {
                 };
 
                 try {
-                  await DonationApiService(baseUrl: 'http://localhost:7001').createDonation(data);
+                  await DonationApiService(baseUrl: 'http://10.0.2.2:7001').createDonation(data);
                   print('Donation created successfully');
                 } catch (e) {
                   print('Failed to create donation: $e');
