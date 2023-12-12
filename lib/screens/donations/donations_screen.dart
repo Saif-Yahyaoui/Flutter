@@ -1,5 +1,8 @@
 import 'package:admin/screens/donations/add_donations_screen.dart';
+import 'package:admin/screens/donations/components/donations.dart';
 import 'package:flutter/material.dart';
+import '../../constants.dart';
+import '../../models/Donation.dart';
 import '../../service/DonationApiService.dart';
 
 class DonationScreen extends StatefulWidget {
@@ -23,21 +26,8 @@ class _DonationScreenState extends State<DonationScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text('Donations'),
-          actions: [
-            // Button in the app bar on the right
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => POST()),
-                  );                },
-                child: Text('Add Donations'),
-              ),
-            ),
-          ],
         ),
+
         body: FutureBuilder<List<Map<String, dynamic>>>(
           future: donations,
           builder: (context, snapshot) {
@@ -48,23 +38,20 @@ class _DonationScreenState extends State<DonationScreen> {
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return Text('No donations available.');
             } else {
-              return ListView.builder(
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Quantity: ${snapshot.data![index]['quantite']}'),
-                        Text('Date: ${snapshot.data![index]['date']}'),
-                        Text('Status: ${snapshot.data![index]['etat']}'),
-                        // Add more fields as needed
-                      ],
-                    ),
-                    // Add more features to the ListTile if required
-                  );
-                },
-              );
+              // Clear existing donations before adding new ones
+              Donation.clearDonations();
+              // Populate the list of donations
+
+            snapshot.data!.forEach((donation) {
+                Donation.allDonations.add(Donation(
+                  quantite: donation['quantite'] ?? 0, // Provide a default value (e.g., 0)
+                  date: donation['date'] ?? '', // Provide a default value (e.g., an empty string)
+                  etat: donation['etat'] ?? '',  // Provide a default value (e.g., an empty string)
+                ));
+              });
+
+
+              return Donations();
             }
           },
         ),
@@ -72,3 +59,4 @@ class _DonationScreenState extends State<DonationScreen> {
     );
   }
 }
+

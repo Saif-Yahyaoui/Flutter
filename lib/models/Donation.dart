@@ -1,19 +1,22 @@
-class Donation {
-  //String title;
-  //String description;
-  int quantite;
+import 'dart:ui';
+import 'package:flutter/material.dart';
+import '../../../constants.dart';
 
+class Donation {
+  int quantite;
   String date;
   String etat;
-  //String image;
 
   Donation({
-   // required this.title,
-   // required this.description,
     required this.quantite,
-
     required this.date,
     required this.etat,
-    //required this.image,
   });
+
+  static List<Donation> allDonations = []; // List to store donations
+
+  // Add a method to clear the list
+  static void clearDonations() {
+    allDonations.clear();
+  }
 }
