@@ -83,7 +83,6 @@ class DonationInfoCard extends StatelessWidget {
 
 
 
-
 class DonationInfoRow extends StatelessWidget {
   const DonationInfoRow({
     Key? key,

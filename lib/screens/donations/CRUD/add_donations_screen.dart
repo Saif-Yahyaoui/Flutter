@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../service/DonationApiService.dart';
+import '../../../service/DonationApiService.dart';
 
 class POST extends StatefulWidget {
   const POST({super.key});
@@ -49,7 +49,8 @@ class _POSTState extends State<POST> {
                 };
 
                 try {
-                  await DonationApiService(baseUrl: 'http://10.0.2.2:7001').createDonation(data);
+                  await DonationApiService(baseUrl: 'http://localhost:7001').createDonation(data);
+                  // Mobile host 10.0.2.2
                   print('Donation created successfully');
                 } catch (e) {
                   print('Failed to create donation: $e');

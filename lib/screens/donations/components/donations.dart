@@ -3,8 +3,8 @@ import 'package:admin/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:admin/models/Donation.dart';
 import '../../../constants.dart';
-import '../add_donations_screen.dart';
-import '../edit_donation.dart';
+import '../CRUD/add_donations_screen.dart';
+import '../CRUD/edit_donation.dart';
 import 'donations_info_card.dart';
 
 class Donations extends StatelessWidget {
