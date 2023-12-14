@@ -1,4 +1,5 @@
 
+import 'package:admin/screens/profile/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -56,7 +57,12 @@ class SideMenu extends StatelessWidget {
           DrawerListTile(
             title: "Profile",
             svgSrc: "assets/icons/edit.svg",
-            press: () {},
+            press: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ProfileScreen()),
+              );
+            },
           ),
           DrawerListTile(
             title: "Settings",
