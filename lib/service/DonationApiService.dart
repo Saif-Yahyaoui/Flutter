@@ -37,5 +37,19 @@ class DonationApiService {
       print(e.toString());
     }
   }
+  /*Future<void> updateDonation(int id, Map<String, dynamic> updatedData) async {
+    final response = await http.put(
+      Uri.parse('$baseUrl/donation/$id'), // Update the URL accordingly
+      body: jsonEncode(updatedData), // Convert the body to JSON
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      print('Donation updated successfully');
+    } else {
+      print('Failed to update donation. Status code: ${response.statusCode}');
+    }
+  }
+*/
 
 }
