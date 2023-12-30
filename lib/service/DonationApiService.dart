@@ -37,19 +37,48 @@ class DonationApiService {
       print(e.toString());
     }
   }
-  /*Future<void> updateDonation(int id, Map<String, dynamic> updatedData) async {
-    final response = await http.put(
-      Uri.parse('$baseUrl/donation/$id'), // Update the URL accordingly
-      body: jsonEncode(updatedData), // Convert the body to JSON
-      headers: {'Content-Type': 'application/json'},
-    );
+  Future<void> updateDonation(String donationId, Map<String, dynamic> updatedData) async {
+    try {
+      final response = await http.put(
+        Uri.parse('$baseUrl/donation/$donationId'), // Assuming this is the correct endpoint for updating a donation
+        body: jsonEncode(updatedData),
+        headers: {'Content-Type': 'application/json'},
+      );
 
-    if (response.statusCode == 200) {
-      print('Donation updated successfully');
-    } else {
-      print('Failed to update donation. Status code: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        var responseData = json.decode(response.body);
+        print('Donation updated successfully: $responseData');
+      } else {
+        print('Failed to update donation');
+        throw Exception('Failed to update donation');
+      }
+    } catch (e) {
+      print('Error updating donation: $e');
+      throw Exception('Error updating donation');
     }
   }
-*/
+
+  Future<void> deleteDonation(String donationId) async {
+    try {
+      final response = await http.delete(
+        Uri.parse('$baseUrl/donation/$donationId'),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        var responseData = json.decode(response.body);
+        print('Donation deleted successfully: $responseData');
+      } else {
+        print('Failed to delete donation');
+        throw Exception('Failed to delete donation');
+      }
+    } catch (e) {
+      print('Error deleting donation: $e');
+      throw Exception('Error deleting donation');
+    }
+  }
 
 }
+
+
+

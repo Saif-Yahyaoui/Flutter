@@ -1,7 +1,5 @@
 import 'package:admin/models/Donation.dart';
-import 'package:admin/models/MyFiles.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../constants.dart';
 
@@ -40,41 +38,33 @@ class DonationInfoCard extends StatelessWidget {
                 ),
                 SizedBox(width: 8),
                 InkWell(
-                  onTap: () {
-                    // Show a confirmation dialog before deleting
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text("Delete Donation"),
-                          content: Text("Are you sure you want to delete this donation?"),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop(); // Close the dialog
-                              },
-                              child: Text("Cancel"),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                onDelete(); // Call the onDelete callback
-                                Navigator.of(context).pop(); // Close the dialog
-                              },
-                              child: Text("Delete"),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
+                  onTap: onDelete,
                   child: Icon(Icons.delete_outline, color: Colors.red),
                 ),
               ],
             ),
           ),
-          DonationInfoRow(label: 'Quantity:', value: info.quantite.toString()),
-          DonationInfoRow(label: 'Date:', value: info.date.toString()),
-          DonationInfoRow(label: 'Status:', value: info.etat.toString()),
+          DonationInfoRow(
+              label: 'Title:',
+              value: info.title.toString()
+          ),
+          DonationInfoRow(
+            label: 'Description:',
+            value: info.description.toString(),
+            maxLines: 1,
+          ),
+          DonationInfoRow(
+              label: 'Quantity:',
+              value: info.quantity.toString()
+          ),
+          DonationInfoRow(
+              label: 'Date:',
+              value: info.date.toString()
+          ),
+          DonationInfoRow(
+              label: 'Status:',
+              value: info.status.toString()
+          ),
         ],
       ),
     );
@@ -88,20 +78,24 @@ class DonationInfoRow extends StatelessWidget {
     Key? key,
     required this.label,
     required this.value,
+    this.maxLines = 1,
   }) : super(key: key);
 
   final String label;
   final String value;
+  final int maxLines;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      padding: const EdgeInsets.symmetric(vertical: 5.0),
       child: Text(
         '$label $value',
         style: TextStyle(
           fontWeight: FontWeight.bold,
         ),
+        maxLines: maxLines,
+        overflow: TextOverflow.ellipsis,
       ),
     );
   }

@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
 import '../../../service/DonationApiService.dart';
 
-class POST extends StatefulWidget {
-  const POST({super.key});
+class AddDonationScreen extends StatefulWidget {
+  final VoidCallback onRefresh; // Add this line
+
+  const AddDonationScreen({
+    Key? key,
+    required this.onRefresh,
+  }) : super(key: key);
 
   @override
-  State<POST> createState() => _POSTState();
+  State<AddDonationScreen> createState() => _AddDonationScreenState();
 }
 
-TextEditingController quantite = TextEditingController();
+TextEditingController title = TextEditingController();
+TextEditingController description = TextEditingController();
+TextEditingController quantity = TextEditingController();
 TextEditingController date = TextEditingController();
-TextEditingController etat = TextEditingController();
+TextEditingController status = TextEditingController();
 
-class _POSTState extends State<POST> {
+class _AddDonationScreenState extends State<AddDonationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +29,21 @@ class _POSTState extends State<POST> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
-              controller: quantite,
+              controller: title,
+              decoration: const InputDecoration(labelText: "Title"),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            TextField(
+              controller: description,
+              decoration: const InputDecoration(labelText: "Description"),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            TextField(
+              controller: quantity,
               decoration: const InputDecoration(labelText: "Quantity"),
             ),
             const SizedBox(
@@ -36,22 +57,26 @@ class _POSTState extends State<POST> {
               height: 20,
             ),
             TextField(
-              controller: etat,
+              controller: status,
               decoration: const InputDecoration(labelText: "Status"),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
                 var data = {
-                  "quantite": quantite.text,
+                  "title": title.text,
+                  "description": description.text,
+                  "quantity": quantity.text,
                   "date": date.text,
-                  "etat": etat.text,
+                  "status": status.text,
                 };
 
                 try {
                   await DonationApiService(baseUrl: 'http://localhost:7001').createDonation(data);
-                  // Mobile host 10.0.2.2
                   print('Donation created successfully');
+                  widget.onRefresh(); // Call the callback to refresh the data
+
+                  Navigator.pop(context); // Pop the current route
                 } catch (e) {
                   print('Failed to create donation: $e');
                 }
@@ -64,4 +89,3 @@ class _POSTState extends State<POST> {
     );
   }
 }
-

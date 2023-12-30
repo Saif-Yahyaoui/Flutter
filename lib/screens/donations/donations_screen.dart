@@ -13,24 +13,24 @@ class DonationScreen extends StatefulWidget {
 
 class _DonationScreenState extends State<DonationScreen> {
   final DonationApiService apiService = DonationApiService(baseUrl: 'http://localhost:7001');
-  // Mobile host 10.0.2.2
   late Future<List<Map<String, dynamic>>> donations;
 
   @override
   void initState() {
     super.initState();
-    donations = apiService.getAllDonations();
+    fetchDonations();
+  }
+
+  Future<void> fetchDonations() async {
+    setState(() {
+      donations = apiService.getAllDonations();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-
-       // appBar: AppBar(
-        //  title: Text('Donations'),
-        //),
-
         body: FutureBuilder<List<Map<String, dynamic>>>(
           future: donations,
           builder: (context, snapshot) {
@@ -41,23 +41,21 @@ class _DonationScreenState extends State<DonationScreen> {
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return Text('No donations available.');
             } else {
-              // Clear existing donations before adding new ones
               Donation.clearDonations();
-              // Populate the list of donations
+              snapshot.data!.forEach((donation) {
+                Donation.allDonations.add(Donation(
+                  id: donation['id'] ?? '',
+                  title: donation['title'] ?? '',
+                  description: donation['description'] ?? '',
+                  quantity: donation['quantity'] ?? 0,
+                  date: donation['date'] ?? '',
+                  status: donation['status'] ?? '',
+                ));
+              });
 
-            snapshot.data!.forEach((donation) {
-              Donation.allDonations.add(Donation(
-                quantite: donation['quantite'] ?? 0,
-                date: donation['date'] ?? '',
-                etat: donation['etat'] ?? '',
-              ));
-
-
-
-            });
-
-
-              return Donations();
+              return Donations(
+                onRefresh: fetchDonations, // Pass the function to refresh the data
+              );
             }
           },
         ),
@@ -65,4 +63,3 @@ class _DonationScreenState extends State<DonationScreen> {
     );
   }
 }
-
