@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../donations/donations_screen.dart';
+import '../../products/product_screen.dart';
 
 class SideMenu extends StatelessWidget {
   const SideMenu({
@@ -47,7 +48,12 @@ class SideMenu extends StatelessWidget {
           DrawerListTile(
             title: "Products",
             svgSrc: "assets/icons/products.svg",
-            press: () {},
+            press: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ProductScreen()),
+              );
+            },
           ),
           DrawerListTile(
             title: "Blogs",
