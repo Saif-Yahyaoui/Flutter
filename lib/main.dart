@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(
             create: (context) => MenuAppController(),
+
           ),
         ],
         child: MainScreen(),
