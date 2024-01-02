@@ -1,5 +1,10 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:project/models/product.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:project/models/user.dart';
 
 class ProductScreen extends StatelessWidget {
   @override
@@ -16,72 +21,69 @@ class ProductList extends StatefulWidget {
 }
 
 class _ProductListState extends State<ProductList> {
-  List<Product> products = [
-    Product(
-      title: 'Korean BBQ Burger',
-      price: 8,
-      imageUrl: 'images/koreanburger.jpg',
-      category: 'Fast Food',
-    ),
-    Product(
-      title: 'Cheese Burger',
-      price: 6,
-      imageUrl: 'images/burger.jpg',
-      category: 'Fast Food',
-    ),
-    Product(
-      title: 'Cheesecake',
-      price: 9,
-      imageUrl: 'https://beyondfrosting.com/wp-content/uploads/2023/09/Easy-No-Bake-Chocolate-Cheesecake-009-2.jpg',
-      category: 'Dessert',
-    ),
-    Product(
-      title: 'Pasta',
-      price: 10,
-      imageUrl: 'https://assets.afcdn.com/recipe/20180326/78158_w1024h576c1cx2736cy1824cxt0cyt0cxb5472cyb3648.webp',
-      category: 'Main Meal',
-    ),
-    Product(
-      title: 'Salad',
-      price: 4,
-      imageUrl: 'images/salad.jpg',
-      category: 'Healthy',
-    ),
-  ];
-
+  List<Product> products = [];
   String selectedCategory = 'All';
 
-  Future<void> confirmDeleteProduct(Product product) async {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Confirmation'),
-          content: Text('Are you sure you want to delete this food offer?'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('No'),
-            ),
-            TextButton(
-              onPressed: () {
-                deleteProduct(product);
-                Navigator.of(context).pop();
-              },
-              child: Text('Yes'),
-            ),
-          ],
-        );
-      },
-    );
+  @override
+  void initState() {
+    super.initState();
+    // Charger les produits depuis le serveur lors de l'initialisation
+    fetchProducts();
   }
 
-  void deleteProduct(Product product) {
-    setState(() {
-      products.remove(product);
-    });
+  Future<void> fetchProducts() async {
+    try {
+      final response = await http
+          .get(Uri.parse('http://172.18.2.211:5005/product/products'));
+
+      if (response.statusCode == 200) {
+        final List<dynamic> decodedData = json.decode(response.body);
+        setState(() {
+          products = decodedData.map((data) => Product.fromJson(data)).toList();
+        });
+      } else {
+        throw Exception('Failed to load products');
+      }
+    } catch (e) {
+      print('Error fetching products: $e');
+    }
+  }
+
+  Future<void> deleteProduct(String productId) async {
+    try {
+      final response = await http.delete(
+          Uri.parse('http://172.18.2.211:5005/product/products/$productId'));
+
+      if (response.statusCode == 200) {
+        // Produit supprimé avec succès, mettre à jour l'état local
+        setState(() {
+          products.removeWhere((product) => product.id == productId);
+        });
+      } else {
+        throw Exception('Failed to delete product');
+      }
+    } catch (e) {
+      print('Error deleting product: $e');
+    }
+  }
+
+  Future<User?> fetchUserDetails(String userId) async {
+    try {
+      final response = await http
+          .get(Uri.parse('http://172.18.2.211:5005/user/users/$userId'));
+
+      if (response.statusCode == 200) {
+        final dynamic decodedData = json.decode(response.body);
+        if (decodedData is Map<String, dynamic>) {
+          return User.fromJson(decodedData);
+        }
+      }
+
+      throw Exception('Failed to load user details');
+    } catch (e) {
+      print('Error fetching user details: $e');
+      return null;
+    }
   }
 
   List<String> getCategories() {
@@ -121,13 +123,29 @@ class _ProductListState extends State<ProductList> {
             ),
             itemCount: products.length,
             itemBuilder: (context, index) {
-              if (selectedCategory == 'All' || products[index].category == selectedCategory) {
-                return ProductCard(
-                  product: products[index],
-                  onDelete: () => confirmDeleteProduct(products[index]),
+              if (selectedCategory == 'All' ||
+                  products[index].category == selectedCategory) {
+                return FutureBuilder<User?>(
+                  future: fetchUserDetails(products[index].restaurantId),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      // Passer la liste de produits et de restaurants au widget de l'écran
+                      return ProductCard(
+                        product: products[index],
+                        users: [
+                          snapshot.data!
+                        ], // Convertir l'utilisateur unique en une liste
+                        onDelete: () => confirmDeleteProduct(products[index]),
+                      );
+                    }
+                  },
                 );
               } else {
-                return SizedBox.shrink(); // Retourne un widget vide pour les produits qui ne correspondent pas à la catégorie sélectionnée
+                return SizedBox.shrink();
               }
             },
           ),
@@ -135,16 +153,55 @@ class _ProductListState extends State<ProductList> {
       ],
     );
   }
+
+  Future<void> confirmDeleteProduct(Product product) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirmation'),
+          content: Text('Are you sure you want to delete this food offer?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('No'),
+            ),
+            TextButton(
+              onPressed: () async {
+                await deleteProduct(product.id);
+                Navigator.of(context).pop();
+              },
+              child: Text('Yes'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
 
 class ProductCard extends StatelessWidget {
   final Product product;
-  final VoidCallback onDelete;
+  final List<User> users; // Liste des utilisateurs associés aux produits
+  final VoidCallback onDelete; // Callback de suppression
 
-  ProductCard({required this.product, required this.onDelete});
+  ProductCard({
+    required this.product,
+    required this.users,
+    required this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
+    // Trouver l'utilisateur correspondant au produit
+    User? matchingUser =
+        users.firstWhereOrNull((user) => user.id == product.restaurantId);
+
+    // Utiliser le nom d'utilisateur de l'utilisateur
+    String userName = matchingUser?.username ?? 'Unknown User';
+
     return Card(
       elevation: 4.0,
       color: Color.fromARGB(255, 193, 255, 211),
@@ -155,9 +212,11 @@ class ProductCard extends StatelessWidget {
           children: [
             AspectRatio(
               aspectRatio: 16 / 9,
-              child: Image.network(
-                product.imageUrl,
+              child: CachedNetworkImage(
+                imageUrl: product.imageUrl,
                 fit: BoxFit.cover,
+                placeholder: (context, url) => CircularProgressIndicator(),
+                errorWidget: (context, url, error) => Icon(Icons.error),
               ),
             ),
             SizedBox(height: 8.0),
@@ -170,20 +229,38 @@ class ProductCard extends StatelessWidget {
             SizedBox(height: 4.0),
             Text(
               '${product.price} TND',
-              style: TextStyle(fontSize: 12.0, color: Color.fromARGB(255, 14, 13, 13)),
+              style: TextStyle(
+                fontSize: 12.0,
+                color: Color.fromARGB(255, 14, 13, 13),
+              ),
             ),
             SizedBox(height: 4.0),
             Text(
               'Catégorie: ${product.category}',
-              style: TextStyle(fontSize: 12.0, color: Color.fromARGB(255, 238, 103, 36)),
-            ),
-            SizedBox(height: 8.0),
-            IconButton(
-              icon: Icon(
-                Icons.delete,
-                color: Colors.red,
+              style: TextStyle(
+                fontSize: 12.0,
+                color: Color.fromARGB(255, 238, 103, 36),
               ),
-              onPressed: onDelete,
+            ),
+            SizedBox(height: 4.0),
+            // Afficher le nom de l'utilisateur devant "Posted by"
+            Text(
+              'Posted by: $userName',
+              style: TextStyle(
+                fontSize: 12.0,
+                color: Color.fromARGB(255, 84, 84, 84),
+              ),
+            ),
+            SizedBox(height: 4.0),
+            // Utilisation de la méthode
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.delete),
+                  onPressed: onDelete,
+                ),
+              ],
             ),
           ],
         ),

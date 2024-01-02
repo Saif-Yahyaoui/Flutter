@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:project/dashboard/dashboard_screen.dart';
-import 'package:project/screens/products/product_screen.dart';
 
 /*void main() {
   runApp(const MyApp());
