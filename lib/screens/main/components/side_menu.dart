@@ -1,4 +1,5 @@
 
+import 'package:admin/screens/orders/order_screen.dart';
 import 'package:admin/screens/profile/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -45,13 +46,23 @@ class SideMenu extends StatelessWidget {
             svgSrc: "assets/icons/autocollect.svg",
             press: () {},
           ),
-          DrawerListTile(
+         DrawerListTile(
             title: "Products",
             svgSrc: "assets/icons/products.svg",
             press: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => ProductScreen()),
+              );
+            },
+          ),
+          DrawerListTile(
+            title: "Orders",
+            svgSrc: "assets/icons/products.svg",
+            press: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => OrderScreen()),
               );
             },
           ),
