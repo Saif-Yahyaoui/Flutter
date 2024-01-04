@@ -78,7 +78,7 @@ class EditDonationScreen extends StatelessWidget {
 
             // Call the API to update the donation
             try {
-              await DonationApiService(baseUrl: 'http://localhost:7001').updateDonation(donation.iD, updatedData);
+              await DonationApiService(baseUrl: 'http://localhost:7020').updateDonation(donation.iD, updatedData);
               onRefresh(); // Call the callback to refresh the data
 
               Navigator.of(context).pop();

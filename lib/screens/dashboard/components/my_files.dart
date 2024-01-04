@@ -1,15 +1,23 @@
-
 import 'package:admin/responsive.dart';
+import 'package:admin/screens/donations/CRUD/add_donations_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:admin/models/MyFiles.dart';
 import '../../../constants.dart';
 import 'file_info_card.dart';
 
-class MyFiles extends StatelessWidget {
+class MyFiles extends StatefulWidget {
+  final VoidCallback onRefresh;
+
   const MyFiles({
     Key? key,
+    required this.onRefresh,
   }) : super(key: key);
 
+  @override
+  State<MyFiles> createState() => _MyFilesState();
+}
+
+class _MyFilesState extends State<MyFiles> {
   @override
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
@@ -19,7 +27,7 @@ class MyFiles extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              "My Files",
+              "My Donations",
               style: Theme.of(context).textTheme.titleMedium,
             ),
             ElevatedButton.icon(
@@ -30,9 +38,34 @@ class MyFiles extends StatelessWidget {
                       defaultPadding / (Responsive.isMobile(context) ? 2 : 1),
                 ),
               ),
-              onPressed: () {},
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text("Add New Donation"),
+                      content: Container(
+                        width: 500,
+                        height: 500,
+                        child: AddDonationScreen(
+                          onRefresh:
+                              widget.onRefresh, // Pass the onRefresh callback
+                        ),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(); // Close the dialog
+                          },
+                          child: Text("Close"),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
               icon: Icon(Icons.add),
-              label: Text("Add New"),
+              label: Text("Add new Donation"),
             ),
           ],
         ),

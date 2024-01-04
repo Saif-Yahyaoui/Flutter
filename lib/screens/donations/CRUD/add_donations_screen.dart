@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../service/DonationApiService.dart';
 
 class AddDonationScreen extends StatefulWidget {
-  final VoidCallback onRefresh; // Add this line
+  final VoidCallback onRefresh; 
 
   const AddDonationScreen({
     Key? key,
@@ -72,7 +72,7 @@ class _AddDonationScreenState extends State<AddDonationScreen> {
                 };
 
                 try {
-                  await DonationApiService(baseUrl: 'http://localhost:7001').createDonation(data);
+                  await DonationApiService(baseUrl: 'http://localhost:7020').createDonation(data);
                   print('Donation created successfully');
                   widget.onRefresh(); // Call the callback to refresh the data
 

@@ -12,7 +12,7 @@ class DonationScreen extends StatefulWidget {
 }
 
 class _DonationScreenState extends State<DonationScreen> {
-  final DonationApiService apiService = DonationApiService(baseUrl: 'http://localhost:7001');
+  final DonationApiService apiService = DonationApiService(baseUrl: 'http://localhost:7020');
   late Future<List<Map<String, dynamic>>> donations;
 
   @override
